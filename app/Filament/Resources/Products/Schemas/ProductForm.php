@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -32,7 +32,7 @@ class ProductForm
                         SpatieTagsInput::make('tags')
                             ->type('category')
                             ->label('Category'),
-                        Textarea::make('description')
+                        MarkdownEditor::make('description')
                             ->columnSpanFull(),
                         TextInput::make('stock')
                             ->required()

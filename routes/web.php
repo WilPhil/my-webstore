@@ -6,6 +6,7 @@ Route::view('/', 'pages.homepage')->name('home');
 
 // Route::view('/products', 'pages.product-catalog')->name('product-catalog');
 Route::livewire('/products', 'pages::product.catalog')->name('product-catalog');
+Route::livewire('/products/{product:slug}', 'pages::product.detail')->name('product-detail');
 
 Route::view('/product', 'pages.product')->name('product');
 Route::view('/cart', 'pages.cart')->name('cart');
