@@ -23,7 +23,7 @@
                     <span class="mt-2 text-2xl font-bold">{{ $this->product->formattedPrice }}</span>
                 </div>
                 <div>
-                    <livewire:cart.add-to-cart />
+                    <livewire:cart.add-to-cart :product="$this->product" />
                 </div>
                 <div>
                     <h3 class="font-semibold">Description</h3>
