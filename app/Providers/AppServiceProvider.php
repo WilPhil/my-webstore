@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Contract\CartServiceInterface;
+use App\Services\SessionCartService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Number;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(CartServiceInterface::class, SessionCartService::class);
     }
 
     /**
@@ -21,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+        Number::useCurrency('IDR');
     }
 }
