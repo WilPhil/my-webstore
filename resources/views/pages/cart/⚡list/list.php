@@ -1,8 +1,7 @@
 <?php
 
-use App\Actions\ValidateProductStock;
 use App\Contract\CartServiceInterface;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -23,13 +22,11 @@ new class extends Component
 
     public function checkout()
     {
-        try {
-            ValidateProductStock::run();
-            $this->redirectRoute('checkout');
-        } catch (ValidationException $e) {
-            session()->flash('error', $e->getMessage());
+        if (Gate::denies('stock_availability')) {
             $this->redirectRoute('cart-list');
         }
+
+        $this->redirectRoute('checkout');
     }
 
     #[On('cart-updated')]
