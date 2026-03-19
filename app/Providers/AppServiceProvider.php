@@ -27,9 +27,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // All model data can be mass assignment
         Model::unguard();
+
+        // All number currency will be IDR formatted
         Number::useCurrency('IDR');
 
+        // Gate for checkout
         Gate::define('stock_availability', function (User $user) {
             try {
                 ValidateProductStock::run();
