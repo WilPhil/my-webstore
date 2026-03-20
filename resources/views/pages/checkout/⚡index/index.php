@@ -2,8 +2,8 @@
 
 use App\Contract\CartServiceInterface;
 use App\Data\RegionData;
+use App\Services\LocationQueryService;
 use Illuminate\Support\Number;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Spatie\LaravelData\DataCollection;
@@ -63,7 +63,8 @@ new class extends Component
 
     public function updated()
     {
-        $this->location_data['keyword'] = $this->user_data['keyword_shipping_location'];
+        // $this->location_data['keyword'] = $this->user_data['keyword_shipping_location'];
+        data_set($this->location_data, 'keyword', $this->user_data['keyword_shipping_location']);
     }
 
     public function placeAnOrder()
@@ -82,35 +83,16 @@ new class extends Component
     #[Computed()]
     public function locations(): DataCollection
     {
-        $allData = [
-            [
-                'code' => '001',
-                'province' => 'Jawa Barat',
-                'regency' => 'Bandung',
-                'district' => 'Cikunir',
-                'village' => 'Bondo',
-                'postal_code' => '1234',
-            ],
-            [
-                'code' => '002',
-                'province' => 'Jawa Tengah',
-                'regency' => 'Magelang',
-                'district' => 'Magelang',
-                'village' => 'Muntilan',
-                'postal_code' => '4321',
-            ],
-        ];
+        $data = [];
         $keyword = data_get($this->location_data, 'keyword');
 
-        if (Str::length($keyword) <= 3) {
-            return RegionData::collect([], DataCollection::class);
+        if ($keyword == null) {
+            $data = [];
+
+            return RegionData::collect($data, DataCollection::class);
         }
 
-        $data = collect($allData)->filter(function ($item) use ($keyword) {
-            $item_name = implode(' ', $item);
-
-            return Str::contains($item_name, $keyword, true);
-        });
+        $data = app(LocationQueryService::class)->searchLocationByKeyword($keyword);
 
         return RegionData::collect($data, DataCollection::class);
     }
@@ -122,6 +104,9 @@ new class extends Component
             return null;
         }
 
-        return $this->locations->first(fn ($location) => $location->code == $this->location_data['selected_location']);
+        $code = data_get($this->location_data, 'selected_location');
+        $location = app(LocationQueryService::class)->searchLocationByCode($code);
+
+        return $location;
     }
 };

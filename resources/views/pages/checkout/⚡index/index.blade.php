@@ -57,44 +57,61 @@
                             {{ $message }}
                         </p>
                     @enderror
-                    <div>
-                        <div x-data="{ open: false }" class="relative w-full">
-                            <input wire:model.live.debounce.500ms="user_data.keyword_shipping_location" type="text"
-                                @focus="open = true" @click.outside="open = false"
-                                class="@error('user_data.keyword_shipping_location') border-red-500 @enderror shadow-2xs block w-full rounded-lg border-gray-200 px-3 py-1.5 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                placeholder="Cari Lokasi">
+                    @island
+                        <div>
+                            <div x-data="{ open: false }" class="relative w-full">
+                                <div class="relative">
+                                    <input wire:model.live.debounce.500ms="user_data.keyword_shipping_location"
+                                        type="text" @focus="open = true" @click.outside="open = false"
+                                        class="@error('user_data.keyword_shipping_location') border-red-500 @enderror shadow-2xs block w-full rounded-lg border-gray-200 px-3 py-1.5 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                        placeholder="Cari Lokasi">
 
-                            @if ($this->location_data['keyword'])
-                                <ul class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-b-lg border border-gray-200 bg-white"
-                                    x-show="open">
-                                    @foreach ($this->locations() as $location)
-                                        <li class="w-full inline-flex items-center gap-x-2 py-3 px-4 text-sm font-medium bg-layer border border-layer-line text-layer-foreground -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg">
-                                            <div class="relative flex items-start w-full">
-                                              <div class="flex items-center h-5">
-                                                <input wire:model.live='location_data.selected_location' id="hs-list-group-item-radio-{{ $location->code }}" value="{{ $location->code }}" name="hs-list-group-item-radio" type="radio" class="shrink-0 size-4 bg-transparent border-line-3 rounded-full shadow-2xs text-primary focus:ring-0 focus:ring-offset-0 checked:bg-primary-checked checked:border-primary-checked disabled:opacity-50 disabled:pointer-events-none" checked>
-                                              </div>
-                                              <label for="hs-list-group-item-radio-{{ $location->code }}" class="block ms-3 w-full text-sm text-muted-foreground-2">
-                                                {{ $location->label }}
-                                              </label>
-                                            </div>
-                                      </li>
-                                    @endforeach
-                                </ul>
-                            @endif
+                                    <div wire:loading
+                                        class="border-3 text-primary absolute right-3 top-3 inline-block size-4 animate-spin rounded-[999px] border-current border-t-transparent"
+                                        role="status" aria-label="loading">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
 
-                            @if ($this->location_data['selected_location'])
-                                <p class="mt-2 text-sm text-gray-600">
-                                    Lokasi Dipilih
-                                    <strong>{{ $this->location->label }}</strong>
+                                @if ($this->location_data['keyword'])
+                                    <ul class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-b-lg border border-gray-200 bg-white"
+                                        x-show="open">
+                                        @foreach ($this->locations() as $location)
+                                            <li
+                                                class="bg-layer border-layer-line text-layer-foreground -mt-px inline-flex w-full items-center gap-x-2 border px-4 py-3 text-sm font-medium first:mt-0 first:rounded-t-lg last:rounded-b-lg">
+                                                <div class="relative flex w-full items-start">
+                                                    <div class="flex h-5 items-center">
+                                                        <input wire:model.live='location_data.selected_location'
+                                                            id="hs-list-group-item-radio-{{ $location->code }}"
+                                                            value="{{ $location->code }}" name="hs-list-group-item-radio"
+                                                            type="radio"
+                                                            class="border-line-3 shadow-2xs text-primary checked:bg-primary-checked checked:border-primary-checked size-4 shrink-0 rounded-full bg-transparent focus:ring-0 focus:ring-offset-0 disabled:pointer-events-none disabled:opacity-50"
+                                                            checked>
+                                                    </div>
+                                                    <label for="hs-list-group-item-radio-{{ $location->code }}"
+                                                        class="text-muted-foreground-2 ms-3 block w-full text-sm">
+                                                        {{ $location->label }}
+                                                    </label>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+
+                                @if ($this->location_data['selected_location'])
+                                    <p class="mt-2 text-sm text-gray-600">
+                                        Lokasi Dipilih
+                                        <strong>{{ $this->location->label }}</strong>
+                                    </p>
+                                @endif
+                            </div>
+                            @error('user_data.keyword_shipping_location')
+                                <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
+                                    {{ $message }}
                                 </p>
-                            @endif
+                            @enderror
                         </div>
-                        @error('user_data.keyword_shipping_location')
-                            <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
+                    @endisland
                 </div>
             </div>
             <!-- End Section -->

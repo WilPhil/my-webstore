@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Actions\ValidateProductStock;
 use App\Contract\CartServiceInterface;
 use App\Models\User;
+use App\Services\LocationQueryService;
 use App\Services\SessionCartService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
@@ -20,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(CartServiceInterface::class, SessionCartService::class);
+        $this->app->bind(LocationQueryService::class, LocationQueryService::class);
     }
 
     /**
@@ -45,5 +47,7 @@ class AppServiceProvider extends ServiceProvider
                 return false;
             }
         });
+
+        Model::preventLazyLoading(! app()->isProduction());
     }
 }
