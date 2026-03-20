@@ -28,6 +28,7 @@
 
     <x-footer />
 
+    <script src="../../node_modules/preline/dist/preline.js"></script>
     @livewireScripts
 </body>
 

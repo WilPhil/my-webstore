@@ -68,14 +68,16 @@
                                 <ul class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-b-lg border border-gray-200 bg-white"
                                     x-show="open">
                                     @foreach ($this->locations() as $location)
-                                        <div>
-                                            <input wire:model.live="location_data.selected_location" type="radio"
-                                                id="location-{{ $location->code }}" value="{{ $location->code }}"
-                                                class="" />
-                                            <label for="location-{{ $location->code }}">
+                                        <li class="w-full inline-flex items-center gap-x-2 py-3 px-4 text-sm font-medium bg-layer border border-layer-line text-layer-foreground -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg">
+                                            <div class="relative flex items-start w-full">
+                                              <div class="flex items-center h-5">
+                                                <input wire:model.live='location_data.selected_location' id="hs-list-group-item-radio-{{ $location->code }}" value="{{ $location->code }}" name="hs-list-group-item-radio" type="radio" class="shrink-0 size-4 bg-transparent border-line-3 rounded-full shadow-2xs text-primary focus:ring-0 focus:ring-offset-0 checked:bg-primary-checked checked:border-primary-checked disabled:opacity-50 disabled:pointer-events-none" checked>
+                                              </div>
+                                              <label for="hs-list-group-item-radio-{{ $location->code }}" class="block ms-3 w-full text-sm text-muted-foreground-2">
                                                 {{ $location->label }}
-                                            </label>
-                                        </div>
+                                              </label>
+                                            </div>
+                                      </li>
                                     @endforeach
                                 </ul>
                             @endif
