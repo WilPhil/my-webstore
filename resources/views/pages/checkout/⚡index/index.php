@@ -2,7 +2,10 @@
 
 use App\Contract\CartServiceInterface;
 use App\Data\RegionData;
+use App\Data\ShippingData;
 use App\Services\LocationQueryService;
+use App\Services\ShippingMethodService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Number;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -23,6 +26,10 @@ new class extends Component
         'selected_location' => null,
     ];
 
+    public array $shipping_data = [
+        'shipping_method' => null,
+    ];
+
     public array $cart_summaries = [
         'weight_total' => 0,
         'sub_total' => 0,
@@ -33,16 +40,27 @@ new class extends Component
         'grand_total_formatted' => '-',
     ];
 
+    #[Computed()]
+    public function cartService()
+    {
+        return app(CartServiceInterface::class);
+    }
+
+    #[Computed()]
+    public function locationQueryService()
+    {
+        return app(LocationQueryService::class);
+    }
+
     public function mount()
     {
-        $cart = app(CartServiceInterface::class);
         $shipping_total = 0;
-        $grand_total = $cart->getAllItem()->totalPrice + $shipping_total;
+        $grand_total = $this->cartService()->getAllItem()->totalPrice + $shipping_total;
 
         $this->cart_summaries = [
-            'weight_total' => $cart->getAllItem()->totalWeight,
-            'sub_total' => $cart->getAllItem()->totalPrice,
-            'sub_total_formatted' => $cart->getAllItem()->totalPriceFormatted,
+            'weight_total' => $this->cartService()->getAllItem()->totalWeight,
+            'sub_total' => $this->cartService->getAllItem()->totalPrice,
+            'sub_total_formatted' => $this->cartService->getAllItem()->totalPriceFormatted,
             'shipping_total' => 0,
             'shipping_total_formatted' => Number::currency($shipping_total),
             'grand_total' => $grand_total,
@@ -61,10 +79,9 @@ new class extends Component
         ];
     }
 
-    public function updated()
+    public function updatedUserDataKeywordShippingLocation($value)
     {
-        // $this->location_data['keyword'] = $this->user_data['keyword_shipping_location'];
-        data_set($this->location_data, 'keyword', $this->user_data['keyword_shipping_location']);
+        data_set($this->location_data, 'keyword', $value);
     }
 
     public function placeAnOrder()
@@ -77,7 +94,7 @@ new class extends Component
     #[Computed()]
     public function items()
     {
-        return app(CartServiceInterface::class)->getAllItem()->items;
+        return $this->cartService()->getAllItem()->items;
     }
 
     #[Computed()]
@@ -92,7 +109,7 @@ new class extends Component
             return RegionData::collect($data, DataCollection::class);
         }
 
-        $data = app(LocationQueryService::class)->searchLocationByKeyword($keyword);
+        $data = $this->locationQueryService()->searchLocationByKeyword($keyword);
 
         return RegionData::collect($data, DataCollection::class);
     }
@@ -105,8 +122,32 @@ new class extends Component
         }
 
         $code = data_get($this->location_data, 'selected_location');
-        $location = app(LocationQueryService::class)->searchLocationByCode($code);
+        $location = $this->locationQueryService()->searchLocationByCode($code);
+
+        // $this->dispatch('shipping-method');
 
         return $location;
+    }
+
+    /** @return DataCollection<ShippingData> */
+    #[Computed()]
+    public function shippingMethods(): DataCollection|Collection
+    {
+        if (data_get($this->location_data, 'selected_location') == null) {
+            return new DataCollection(ShippingData::class, []);
+        }
+
+        $location_service = $this->locationQueryService();
+        $shipping_service = app(ShippingMethodService::class);
+        $shipping_origin_code = config('shipping.shipping_origin_code');
+        $cart_service = $this->cartService();
+
+        return $shipping_service->getShippingMethods(
+            $location_service->searchLocationByCode($shipping_origin_code),
+            $location_service->searchLocationByCode(data_get($this->location_data, 'selected_location')),
+            $cart_service->getAllItem()
+        )
+            ->toCollection()
+            ->groupBy('service');
     }
 };
