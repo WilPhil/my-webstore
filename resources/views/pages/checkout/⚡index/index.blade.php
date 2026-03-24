@@ -14,7 +14,7 @@
                             class="@error('user_data.full_name') border-red-600 @enderror shadow-2xs block w-full rounded-lg border-gray-200 px-3 py-1.5 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                             placeholder="Full Name">
                         @error('user_data.full_name')
-                            <p class="mt-2 text-xs text-lg text-red-600" id="hs-validation-name-error-helper">
+                            <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
                                 {{ $message }}
                             </p>
                         @enderror
@@ -61,9 +61,9 @@
                     <div>
                         <div x-data="{ open: false }" class="relative w-full">
                             <div class="relative">
-                                <input wire:model.live.debounce.500ms="user_data.keyword_shipping_location"
-                                    type="text" @focus="open = true" @click.outside="open = false"
-                                    class="@error('user_data.keyword_shipping_location') border-red-500 @enderror shadow-2xs peer block w-full rounded-lg border-gray-200 px-3 py-1.5 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                <input wire:model.live.debounce.500ms="location_data.keyword" type="text"
+                                    @focus="open = true" @click.outside="open = false"
+                                    class="@error('user_data.shipping_location_code') border-red-500 @enderror shadow-2xs peer block w-full rounded-lg border-gray-200 px-3 py-1.5 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                     placeholder="Cari Lokasi" />
 
                                 <div class="not-peer-data-loading:hidden border-3 text-primary absolute right-3 top-3 size-4 animate-spin rounded-[999px] border-current border-t-transparent"
@@ -72,55 +72,61 @@
                                 </div>
                             </div>
 
-                            @if ($this->location_data['keyword'])
-                                <ul class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-b-lg border border-gray-200 bg-white"
+                            @error('user_data.shipping_location_code')
+                                <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                            @if ($this->locations->toCollection()->isNotEmpty())
+                                <ul class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-b-lg  bg-white"
                                     x-show="open">
                                     @foreach ($this->locations() as $location)
                                         <li
-                                            class="bg-layer border-layer-line text-layer-foreground -mt-px inline-flex w-full items-center gap-x-2 border px-4 py-3 text-sm font-medium first:mt-0 first:rounded-t-lg last:rounded-b-lg">
-                                            <div class="relative flex w-full items-start">
+                                            class="bg-layer border-layer-line text-layer-foreground -mt-px inline-flex w-full items-center gap-x-2 border px-4 py-3 text-sm font-medium first:mt-0 first:rounded-t-lg last:rounded-b-lg hover:bg-select-item-hover focus:outline-hidden focus:bg-select-item-focus cursor-pointer">
+                                            <div class="relative flex w-full items-center cursor-pointer">
                                                 <div class="flex h-5 items-center">
                                                     <input wire:key="{{ $location->code }}"
-                                                        wire:model.live="location_data.selected_location"
+                                                        wire:model.live="location_data.selected_location_code"
                                                         id="hs-list-group-item-radio-{{ $location->code }}"
                                                         value="{{ $location->code }}" name="hs-list-group-item-radio"
-                                                        type="radio"
-                                                        class="border-line-3 shadow-2xs text-primary checked:bg-primary-checked checked:border-primary-checked size-4 shrink-0 rounded-full bg-transparent focus:ring-0 focus:ring-offset-0 disabled:pointer-events-none disabled:opacity-50"
-                                                        checked>
+                                                        type="radio" class="sr-only" checked>
                                                 </div>
                                                 <label for="hs-list-group-item-radio-{{ $location->code }}"
-                                                    class="text-muted-foreground-2 ms-3 block w-full text-sm">
+                                                    class="text-muted-foreground-2 mx-3 block w-full text-sm cursor-pointer">
                                                     {{ $location->label }}
                                                 </label>
+                                                @if ($this->user_data['shipping_location_code'] === $location->code)
+                                                    <svg class="h-5 w-5 text-primary-600" viewBox="0 0 20 20"
+                                                        fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                @endif
                                             </div>
                                         </li>
                                     @endforeach
                                 </ul>
                             @endif
 
-                            @if ($this->location_data['selected_location'])
+                            @if ($this->location_data['selected_location_code'])
                                 <p class="mt-2 text-sm text-gray-600">
                                     Lokasi Dipilih
                                     <strong>{{ $this->location->label }}</strong>
                                 </p>
                             @endif
                         </div>
-
-                        @error('user_data.keyword_shipping_location')
-                            <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
-                                {{ $message }}
-                            </p>
-                        @enderror
                     </div>
                 </div>
 
                 <!-- Shipping Section -->
-                @if ($this->location_data['keyword'])
+                @if ($this->location_data['selected_location_code'])
                     <label for="af-shipping-method" class="mt-5 inline-block text-sm font-medium dark:text-white">
                         Shipping Method
                     </label>
 
-                    <div wire:loading wire:target="location_data.selected_location"
+                    <div wire:loading wire:target="location_data.selected_location_code"
                         class="mt-3 w-full animate-pulse space-y-3">
                         <p class="bg-surface-1 h-4 rounded-full" style="width: 20%;"></p>
                         <ul class="mt-2 space-y-3">
@@ -143,7 +149,7 @@
                                         class="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">
                                         <div class="flex items-center justify-start gap-2">
                                             <input wire:key="{{ $method->hash }}"
-                                                wire:model.live="shipping_data.shipping_method" type="radio"
+                                                wire:model.live="shipping_data.shipping_method_hash" type="radio"
                                                 value="{{ $method->hash }}"
                                                 class="mt-0.5 shrink-0 rounded-full border-gray-200 text-blue-600 checked:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:checked:border-blue-500 dark:checked:bg-blue-500 dark:focus:ring-offset-gray-800"
                                                 id="shipping_method_{{ $method->hash }}">
@@ -162,6 +168,12 @@
                             @endforeach
                         </div>
                     </div>
+
+                    @error('user_data.shipping_method_hash')
+                        <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 @endif
             </div>
 
@@ -212,12 +224,22 @@
                     </li>
                     <li
                         class="-mt-px inline-flex items-center gap-x-2 border border-gray-200 px-4 py-3 text-sm text-gray-800 first:mt-0 first:rounded-t-lg last:rounded-b-lg dark:border-neutral-700 dark:text-neutral-200">
-                        <div class="flex w-full items-center justify-between">
+                        <div wire:loading.remove wire:target="shipping_data.shipping_method_hash"
+                            class="flex w-full items-center justify-between">
                             <span class="flex flex-col">
-                                <span>Shipping (JNT YES)</span>
-                                <span class="text-xs">{{ $this->cart_summaries['weight_total'] }} gram</span>
+                                <span>{{ $this->shippingMethod?->label ?? '-' }}</span>
+                                <span class="text-xs">{{ $this->shippingMethod?->weight ?? '0' }} gram</span>
                             </span>
-                            <span>{{ $this->cart_summaries['shipping_total_formatted'] }}</span>
+                            <span>{{ $this->shippingMethod?->cost_formatted ?? 'IDR 0.00' }}</span>
+                        </div>
+
+                        <div wire:loading.flex wire:target="shipping_data.shipping_method_hash"
+                            class="flex w-full items-center justify-between">
+                            <span class="flex flex-col w-full gap-2">
+                                <span class="bg-surface-1 h-4 rounded-full" style="width: 30%;"></span>
+                                <span class="bg-surface-1 h-4 rounded-full" style="width: 10%;"></span>
+                            </span>
+                            <span class="bg-surface-1 h-4 rounded-full" style="width: 20%;"></span>
                         </div>
                     </li>
                     <li

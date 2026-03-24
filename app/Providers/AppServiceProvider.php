@@ -48,6 +48,19 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        // Gate for checkout also
+        Gate::define('empty_cart', function (CartServiceInterface $cart) {
+            try {
+                $cart_quantity = $cart->getAllItem()->totalQuantity;
+
+                return $cart_quantity > 0;
+            } catch (ValidationException $e) {
+                session()->flash('error', $e->getMessage());
+
+                return false;
+            }
+        });
+
         Model::preventLazyLoading(! app()->isProduction());
     }
 }
