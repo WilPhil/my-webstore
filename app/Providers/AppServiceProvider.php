@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         Number::useCurrency('IDR');
 
         // Gate for checkout
-        Gate::define('stock_availability', function (User $user) {
+        Gate::define('stock_availability', function (?User $user) {
             try {
                 ValidateProductStock::run();
 
@@ -49,11 +49,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Gate for checkout also
-        Gate::define('empty_cart', function (CartServiceInterface $cart) {
+        Gate::define('empty_cart', function (?User $user) {
             try {
-                $cart_quantity = $cart->getAllItem()->totalQuantity;
+                $cart_quantity = app(CartServiceInterface::class)->getAllItem()->totalQuantity;
 
-                return $cart_quantity > 0;
+                return $cart_quantity <= 0;
             } catch (ValidationException $e) {
                 session()->flash('error', $e->getMessage());
 
