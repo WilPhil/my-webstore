@@ -4,7 +4,9 @@ use App\Contract\CartServiceInterface;
 use App\Data\RegionData;
 use App\Data\ShippingData;
 use App\Rules\ShippingHashExists;
+use App\Rules\ValidPaymentHash;
 use App\Services\LocationQueryService;
+use App\Services\PaymentMethodQueryService;
 use App\Services\ShippingMethodService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
@@ -23,6 +25,7 @@ new class extends Component
         'shipping_address' => null,
         'shipping_location_code' => null,
         'shipping_method_hash' => null,
+        'payment_method_hash' => null,
     ];
 
     public array $location_data = [
@@ -32,6 +35,10 @@ new class extends Component
 
     public array $shipping_data = [
         'shipping_method_hash' => null,
+    ];
+
+    public array $payment_data = [
+        'payment_method_hash' => null,
     ];
 
     public array $cart_summaries = [
@@ -44,6 +51,12 @@ new class extends Component
         'grand_total_formatted' => '-',
     ];
 
+    #[Computed()]
+    public function cart()
+    {
+        return app(CartServiceInterface::class)->getAllItem();
+    }
+
     public function locationQueryService()
     {
         return app(LocationQueryService::class);
@@ -54,16 +67,11 @@ new class extends Component
         return app(ShippingMethodService::class);
     }
 
-    #[Computed()]
-    public function cart()
-    {
-        return app(CartServiceInterface::class)->getAllItem();
-    }
-
     public function mount()
     {
         if (Gate::check('empty_cart')) {
-            abort(403);
+            $this->redirectRoute('cart-list');
+            session()->flash('error', 'Cart can not be empty.');
         }
         $this->calculateTotals();
     }
@@ -77,6 +85,7 @@ new class extends Component
             'user_data.shipping_address' => 'required|string|min:10|max:255',
             'user_data.shipping_location_code' => 'required|exists:regions,code',
             'user_data.shipping_method_hash' => ['required', new ShippingHashExists],
+            'user_data.payment_method_hash' => ['required', new ValidPaymentHash],
         ];
     }
 
@@ -88,8 +97,12 @@ new class extends Component
     public function updatedShippingDataShippingMethodHash($value)
     {
         data_set($this->user_data, 'shipping_method_hash', $value);
-        dd($this->user_data['shipping_method_hash']);
         $this->dispatch('update-shipping-method');
+    }
+
+    public function updatedPaymentDataPaymentMethodHash($value)
+    {
+        data_set($this->user_data, 'payment_method_hash', $value);
     }
 
     #[On('update-shipping-method')]
@@ -185,5 +198,11 @@ new class extends Component
         $hash = data_get($this->user_data, 'shipping_method_hash');
 
         return $this->shippingMethodService()->getShippingMethod($hash);
+    }
+
+    #[Computed()]
+    public function paymentMethods()
+    {
+        return app(PaymentMethodQueryService::class)->getPaymentMethods();
     }
 };

@@ -44,7 +44,7 @@
 
             <!-- Location Section -->
             <div
-                class="mt-5 border-t border-gray-200 py-6 first:border-transparent first:pt-0 last:pb-0 dark:border-neutral-700 dark:first:border-transparent">
+                class="mt-3 border-y border-gray-200 py-6 first:border-transparent first:pt-0 last:pb-0 dark:border-neutral-700 dark:first:border-transparent">
                 <label for="af-payment-billing-address" class="inline-block hidden text-sm font-medium dark:text-white">
                     Billing address
                 </label>
@@ -125,85 +125,81 @@
                     <label for="af-shipping-method" class="mt-5 inline-block text-sm font-medium dark:text-white">
                         Shipping Method
                     </label>
-
-                    <div wire:loading wire:target="location_data.selected_location_code"
-                        class="mt-3 w-full animate-pulse space-y-3">
-                        <p class="bg-surface-1 h-4 rounded-full" style="width: 20%;"></p>
-                        <ul class="mt-2 space-y-3">
-                            <li class="bg-surface-1 h-4 w-full rounded-full"></li>
-                        </ul>
-                        <p class="bg-surface-1 h-4 rounded-full" style="width: 20%;"></p>
-                        <ul class="mt-2 space-y-3">
-                            <li class="bg-surface-1 h-4 w-full rounded-full"></li>
-                        </ul>
-                    </div>
-
-                    <div class="mt-2 space-y-3">
-                        <div class="grid space-y-2">
-                            @foreach ($this->shippingMethods as $shipping_group => $shipping_method_service)
-                                <div class="text-xs font-bold">
-                                    {{ $shipping_group }}
-                                </div>
-                                @foreach ($shipping_method_service as $method)
-                                    <label for="shipping_method_{{ $method->hash }}"
-                                        class="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">
-                                        <div class="flex items-center justify-start gap-2">
-                                            <input wire:key="{{ $method->hash }}"
-                                                wire:model.live="shipping_data.shipping_method_hash" type="radio"
-                                                value="{{ $method->hash }}"
-                                                class="mt-0.5 shrink-0 rounded-full border-gray-200 text-blue-600 checked:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:checked:border-blue-500 dark:checked:bg-blue-500 dark:focus:ring-offset-gray-800"
-                                                id="shipping_method_{{ $method->hash }}">
-                                            @if ($method->logo_url)
-                                                <img src="{{ $method->logo_url }}" class="h-5" />
-                                            @endif
-                                            <span
-                                                class="ms-3 text-sm text-gray-500 dark:text-neutral-400">{{ $method->label }}
-                                            </span>
-                                        </div>
-                                        <span class="text-sm text-gray-800">
-                                            {{ $method->cost_formatted }}
-                                        </span>
-                                    </label>
-                                @endforeach
-                            @endforeach
-                        </div>
-                    </div>
-
-                    @error('user_data.shipping_method_hash')
-                        <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
-                            {{ $message }}
-                        </p>
-                    @enderror
                 @endif
-            </div>
 
+                <div wire:loading wire:target="location_data.selected_location_code"
+                    class="mt-3 w-full animate-pulse space-y-3">
+                    <p class="bg-surface-1 h-4 rounded-full" style="width: 20%;"></p>
+                    <ul class="mt-2 space-y-3">
+                        <li class="bg-surface-1 h-4 w-full rounded-full"></li>
+                    </ul>
+                    <p class="bg-surface-1 h-4 rounded-full" style="width: 20%;"></p>
+                    <ul class="mt-2 space-y-3">
+                        <li class="bg-surface-1 h-4 w-full rounded-full"></li>
+                    </ul>
+                </div>
+
+                <div wire:loading.remove wire:target="location_data.selected_location_code" class="mt-2 space-y-3">
+                    <div class="grid space-y-2">
+                        @foreach ($this->shippingMethods as $shipping_group => $shipping_method_service)
+                            <div class="text-xs font-bold">
+                                {{ $shipping_group }}
+                            </div>
+                            @foreach ($shipping_method_service as $method)
+                                <label for="shipping_method_{{ $method->hash }}"
+                                    class="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">
+                                    <div class="flex items-center justify-start gap-2">
+                                        <input wire:key="{{ $method->hash }}"
+                                            wire:model.live="shipping_data.shipping_method_hash" type="radio"
+                                            value="{{ $method->hash }}"
+                                            class="mt-0.5 shrink-0 rounded-full border-gray-200 text-blue-600 checked:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:checked:border-blue-500 dark:checked:bg-blue-500 dark:focus:ring-offset-gray-800"
+                                            id="shipping_method_{{ $method->hash }}">
+                                        @if ($method->logo_url)
+                                            <img src="{{ $method->logo_url }}" class="h-5" />
+                                        @endif
+                                        <span
+                                            class="ms-3 text-sm text-gray-500 dark:text-neutral-400">{{ $method->label }}
+                                        </span>
+                                    </div>
+                                    <span class="text-sm text-gray-800">
+                                        {{ $method->cost_formatted }}
+                                    </span>
+                                </label>
+                            @endforeach
+                        @endforeach
+                    </div>
+                </div>
+
+                @error('user_data.shipping_method_hash')
+                    <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
+                        {{ $message }}
+                    </p>
+                @enderror
+            </div>
 
             <label for="af-payment-method" class="mt-5 inline-block text-sm font-medium dark:text-white">
                 Payment Method
             </label>
             <div class="mt-2 space-y-3">
                 <div class="grid space-y-2">
-                    @php
-                        $payment_methods = [
-                            'Bank Transfer - BCA',
-                            'Bank Transfer - BNI',
-                            'Virtual Account BCA',
-                            'QRIS',
-                            'Dana',
-                        ];
-                    @endphp
-                    @foreach ($payment_methods as $key => $item)
+                    @foreach ($this->payment_methods as $key => $payment_method)
                         <label for="payment_method_{{ $key }}"
                             class="flex w-full rounded-lg border border-gray-200 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">
-                            <input type="radio" name="hs-vertical-radio-in-form"
+                            <input wire:key="payment-method-{{ $payment_method->hash }}"
+                                wire:model.live="payment_data.payment_method_hash" type="radio"
                                 class="mt-0.5 shrink-0 rounded-full border-gray-200 text-blue-600 checked:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:checked:border-blue-500 dark:checked:bg-blue-500 dark:focus:ring-offset-gray-800"
-                                id="payment_method_{{ $key }}">
-                            <span class="ms-3 text-sm text-gray-500 dark:text-neutral-400">{{ $item }}</span>
+                                value="{{ $payment_method->hash }}" id="payment_method_{{ $key }}">
+                            <span
+                                class="ms-3 text-sm text-gray-500 dark:text-neutral-400">{{ $payment_method->label }}</span>
                         </label>
                     @endforeach
-
                 </div>
             </div>
+            @error('user_data.payment_method_hash')
+                <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
         <div class="p-10">
             <h1 class="mb-5 text-2xl font-light">Order Summary</h1>
