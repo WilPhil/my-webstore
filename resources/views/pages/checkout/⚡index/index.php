@@ -1,6 +1,8 @@
 <?php
 
 use App\Contract\CartServiceInterface;
+use App\Data\CheckoutData;
+use App\Data\CustomerData;
 use App\Data\RegionData;
 use App\Data\ShippingData;
 use App\Rules\ShippingHashExists;
@@ -67,6 +69,11 @@ new class extends Component
         return app(ShippingMethodService::class);
     }
 
+    public function paymentMethodQueryService()
+    {
+        return app(PaymentMethodQueryService::class);
+    }
+
     public function mount()
     {
         if (Gate::check('empty_cart')) {
@@ -129,8 +136,22 @@ new class extends Component
 
     public function placeAnOrder()
     {
-        $this->validate();
-        dd($this->user_data);
+        $validated = $this->validate();
+        $customer_data = CustomerData::from(data_get($validated, 'user_data'));
+        $shipping_method = $this->shippingMethodService()->getShippingMethod(data_get($validated, 'user_data.shipping_method_hash'));
+        $payment_method = $this->paymentMethodQueryService()->getPaymentMethodByHash(data_get($validated, 'user_data.payment_method_hash'));
+
+        $checkout_data = CheckoutData::from([
+            'customer' => $customer_data,
+            'shipping_address' => data_get($validated, 'user_data.shipping_address'),
+            'origin' => $shipping_method->origin,
+            'destination' => $shipping_method->destination,
+            'cart' => $this->cart,
+            'shipping' => $shipping_method,
+            'payment' => $payment_method,
+        ]);
+
+        dd($checkout_data);
     }
 
     #[Computed()]
@@ -203,6 +224,6 @@ new class extends Component
     #[Computed()]
     public function paymentMethods()
     {
-        return app(PaymentMethodQueryService::class)->getPaymentMethods();
+        return $this->paymentMethodQueryService()->getPaymentMethods();
     }
 };
