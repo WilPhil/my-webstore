@@ -13,6 +13,8 @@ interface CartServiceInterface
 
     public function removeItem(string $sku): void;
 
+    public function clearCart(): void;
+
     public function getItemBySku(string $sku): ?CartItemData;
 
     public function getAllItem(): CartData;
