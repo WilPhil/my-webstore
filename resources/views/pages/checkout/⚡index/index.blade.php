@@ -248,8 +248,13 @@
                 </ul>
                 <!-- End List Group -->
                 <button wire:click="placeAnOrder" type="button"
-                    class="focus:outline-hidden inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50">
+                    class="focus:outline-hidden inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
+                    wire:loading.attr="disabled" wire:target="placeAnOrder">
                     Place an Order
+                    <div class="not-in-data-loading:hidden animate-spin inline-block size-4 border-3 border-current border-t-transparent rounded-[999px] text-white"
+                        role="status" aria-label="loading">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </button>
             </div>
         </div>
