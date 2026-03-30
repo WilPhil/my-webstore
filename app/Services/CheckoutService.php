@@ -18,7 +18,7 @@ class CheckoutService
 {
     public function makeAnOrder(CheckoutData $checkout): SalesOrderData
     {
-        DB::transaction(function () use ($checkout) {
+        $sales_order = DB::transaction(function () use ($checkout) {
             $customer_data = $checkout->customer;
             $region_origin_data = $checkout->origin;
             $region_destination_data = $checkout->destination;
@@ -58,6 +58,7 @@ class CheckoutService
                 'shipping_driver' => $shipping_data->driver,
                 'shipping_receipt_number' => '',
                 'shipping_courier' => $shipping_data->courier,
+                'shipping_service' => $shipping_data->service,
                 'shipping_estimated_delivery' => $shipping_data->estimated_delivery,
                 'shipping_cost' => $shipping_data->cost,
                 'shipping_weight' => $shipping_data->weight,
@@ -103,6 +104,10 @@ class CheckoutService
             }
 
             $sales_order->items()->createMany($sales_order_items);
+
+            return $sales_order;
         });
+
+        return SalesOrderData::fromModel($sales_order);
     }
 }
