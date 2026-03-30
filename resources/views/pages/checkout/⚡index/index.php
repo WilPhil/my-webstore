@@ -7,6 +7,7 @@ use App\Data\RegionData;
 use App\Data\ShippingData;
 use App\Rules\ShippingHashExists;
 use App\Rules\ValidPaymentHash;
+use App\Services\CheckoutService;
 use App\Services\LocationQueryService;
 use App\Services\PaymentMethodQueryService;
 use App\Services\ShippingMethodService;
@@ -134,7 +135,7 @@ new class extends Component
         ];
     }
 
-    public function placeAnOrder()
+    public function placeAnOrder(CartServiceInterface $cart)
     {
         $validated = $this->validate();
         $customer_data = CustomerData::from(data_get($validated, 'user_data'));
@@ -150,8 +151,10 @@ new class extends Component
             'shipping' => $shipping_method,
             'payment' => $payment_method,
         ]);
+        $sales_order = app(CheckoutService::class)->makeAnOrder($checkout_data);
+        $cart->clearCart();
 
-        dd($checkout_data);
+        $this->redirectRoute('order-confirmed', ['items' => $sales_order->trx_id]);
     }
 
     #[Computed()]
