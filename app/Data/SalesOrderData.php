@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Data;
 
 use App\Models\SalesOrder;
+use App\States\SalesOrder\SalesOrderState;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Number;
 use Spatie\LaravelData\Attributes\Computed;
@@ -31,7 +32,7 @@ class SalesOrderData extends Data
 
     public function __construct(
         public string $trx_id,
-        public string $status,
+        public SalesOrderState $status,
         public CustomerData $customer,
         public string $address_line,
 
@@ -106,7 +107,7 @@ class SalesOrderData extends Data
             sub_total: $sales_order->sub_total,
             shipping_cost: $sales_order->shipping_total,
             grand_total: $sales_order->grand_total,
-            due_date_at: $sales_order->due_date_at,
+            due_date_at: Carbon::parse($sales_order->due_date_at),
             created_at: $sales_order->created_at,
         );
     }

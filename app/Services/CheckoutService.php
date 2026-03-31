@@ -9,6 +9,7 @@ use App\Data\CheckoutData;
 use App\Data\SalesOrderData;
 use App\Models\Product;
 use App\Models\SalesOrder;
+use App\States\SalesOrder\Pending;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ItemNotFoundException;
@@ -29,7 +30,7 @@ class CheckoutService
             $rand = strtoupper(Str::random(5));
             $sales_order = SalesOrder::query()->create([
                 'trx_id' => "TRX-$date-$rand",
-                'status' => 'pending',
+                'status' => Pending::class,
 
                 // Customer
                 'customer_full_name' => $customer_data->full_name,
