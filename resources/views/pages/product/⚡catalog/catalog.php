@@ -60,7 +60,7 @@ new class extends Component
         return [
             'selectProductCategories' => 'category',
             'searchProducts' => 'search',
-            'sortByProducts' => 'sort',
+            'sortByProducts' => 'sort by',
         ];
     }
 

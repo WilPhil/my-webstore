@@ -97,6 +97,19 @@ new class extends Component
         ];
     }
 
+    protected function validationAttributes()
+    {
+        return [
+            'user_data.full_name' => 'full name',
+            'user_data.email_address' => 'email address',
+            'user_data.phone_number' => 'phone number',
+            'user_data.shipping_address' => 'shipping address',
+            'user_data.shipping_location_code' => 'location',
+            'user_data.shipping_method_hash' => 'shipping method',
+            'user_data.payment_method_hash' => 'payment method',
+        ];
+    }
+
     public function updatedLocationDataSelectedLocationCode($value)
     {
         data_set($this->user_data, 'shipping_location_code', $value);
