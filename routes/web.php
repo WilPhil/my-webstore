@@ -9,6 +9,7 @@ Route::livewire('/products', 'pages::product.catalog')->name('product-catalog');
 Route::livewire('/products/{product:slug}', 'pages::product.detail')->name('product-detail');
 Route::livewire('/cart', 'pages::cart.list')->name('cart-list');
 Route::livewire('/checkout', 'pages::checkout.index')->name('checkout');
+Route::livewire('/order-confirmed/{sales_order:trx_id}', 'pages::sales-order.detail')->name('order-confirmed');
 
 // Route::view('/product', 'pages.product')->name('product');
 // Route::view('/cart', 'pages.cart')->name('cart');
