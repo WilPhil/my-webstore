@@ -167,7 +167,7 @@ new class extends Component
         $sales_order = app(CheckoutService::class)->makeAnOrder($checkout_data);
         $cart->clearCart();
 
-        $this->redirectRoute('order-confirmed', ['items' => $sales_order->trx_id]);
+        $this->redirectRoute('order-confirmed', ['sales_order' => $sales_order->trx_id]);
     }
 
     #[Computed()]
