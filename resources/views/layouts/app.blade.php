@@ -27,6 +27,7 @@
     {{ $slot }}
 
     <x-footer />
+    <x-toast />
 
     <script src="../../node_modules/preline/dist/preline.js"></script>
     @livewireScripts
