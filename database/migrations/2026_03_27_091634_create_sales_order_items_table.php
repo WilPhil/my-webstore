@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('tags');
             $table->text('description')->nullable();
             $table->string('cover_url')->nullable();
-            $table->integer('stock');
+            $table->integer('quantity');
             $table->integer('weight');
             $table->double('price', 11, 2);
             $table->double('total', 11, 2);
