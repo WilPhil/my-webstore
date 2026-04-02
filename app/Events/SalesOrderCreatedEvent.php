@@ -9,7 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SalesOrderCreated
+class SalesOrderCreatedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
