@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\States\SalesOrder\Transitions;
 
+use App\Data\SalesOrderData;
+use App\Events\SalesOrderProcessedEvent;
 use App\Models\SalesOrder;
 use App\States\SalesOrder\Process;
 use Spatie\ModelStates\Transition;
@@ -19,6 +21,16 @@ class PendingToProcess extends Transition
         $this->sales_order->update([
             'status' => Process::class,
         ]);
+
+        event(
+            new SalesOrderProcessedEvent(
+                SalesOrderData::fromModel($this->sales_order)
+            )
+        );
+
+        SalesOrderProcessedEvent::dispatch(
+            SalesOrderData::fromModel($this->sales_order)
+        );
 
         return $this->sales_order;
     }
