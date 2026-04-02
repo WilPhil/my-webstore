@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,13 +15,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $tags
  * @property string|null $description
  * @property string|null $cover_url
- * @property int $stock
+ * @property int $quantity
  * @property int $weight
  * @property float $price
  * @property float $total
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\SalesOrder $salesOrder
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read SalesOrder $salesOrder
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem query()
@@ -33,11 +35,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereSalesOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereSku($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereTags($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereTotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrderItem whereWeight($value)
+ *
  * @mixin \Eloquent
  */
 class SalesOrderItem extends Model

@@ -23,7 +23,7 @@ class SalesOrderItemData extends Data
         public string $tags,
         public ?string $description,
         public ?string $cover_url,
-        public int $stock,
+        public int $quantity,
         public int $weight,
         public float $price,
         public float $total,
