@@ -7,11 +7,11 @@ Pesanan Anda dengan nomor **#{{ $sales_order->trx_id }}** telah dibatalkan dan t
 
 ## 📄 Ringkasan Pesanan:
 
-**Alamat Pengiriman:**  
-{{ $sales_order->address_line }}  
-{{ $sales_order->destination->city }}, {{ $sales_order->destination->province }}, {{ $sales_order->destination->postal_code }}
+**Alamat Pengiriman:**
+{{ $sales_order->address_line }}
+{{ $sales_order->destination->regency }}, {{ $sales_order->destination->province }}, {{ $sales_order->destination->postal_code }}
 
-**Tanggal Pemesanan:**  
+**Tanggal Pemesanan:**
 {{ $sales_order->created_at_formatted }}
 
 ---
@@ -30,15 +30,15 @@ Pesanan Anda dengan nomor **#{{ $sales_order->trx_id }}** telah dibatalkan dan t
 
 ## 💰 Rincian Pembayaran
 
-- **Subtotal**: {{ $sales_order->sub_total_formatted }}  
-- **Ongkir**: {{ $sales_order->shipping_total_formatted }}  
-- **Total**: **{{ $sales_order->total_formatted }}**
+- **Subtotal**: {{ $sales_order->sub_total_formatted }}
+- **Ongkir**: {{ $sales_order->shipping_cost_formatted }}
+- **Total**: **{{ $sales_order->grand_total_formatted }}**
 
 ---
 
 Jika ini terjadi karena kesalahan atau Anda ingin memesan ulang, silakan hubungi tim kami.
 
-Terima kasih telah mempercayai kami 🙏  
+Terima kasih telah mempercayai kami 🙏
 Kami berharap dapat membantu Anda di kesempatan berikutnya.
 
 @endcomponent

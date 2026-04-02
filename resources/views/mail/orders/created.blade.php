@@ -22,7 +22,7 @@ Pesanan Anda dengan nomor **#{{ $sales_order->trx_id }}** telah berhasil dibuat.
 | Produk         | Qty | Harga Satuan | Subtotal   |
 |----------------|-----|---------------|------------|
 @foreach ($sales_order->items as $item)
-| {{ $item->name }} | {{ $item->stock }} | {{ $item->price_formatted }} | {{ $item->total_formatted }} |
+| {{ $item->name }} | {{ $item->quantity }} | {{ $item->price_formatted }} | {{ $item->total_formatted }} |
 @endforeach
 @endcomponent
 
