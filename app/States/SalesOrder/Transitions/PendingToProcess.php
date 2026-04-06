@@ -20,6 +20,7 @@ class PendingToProcess extends Transition
     {
         $this->sales_order->update([
             'status' => Process::class,
+            'payment_paid_at' => now('Asia/Jakarta'),
         ]);
 
         event(
