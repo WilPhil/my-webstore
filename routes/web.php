@@ -11,6 +11,8 @@ Route::livewire('/cart', 'pages::cart.list')->name('cart-list');
 Route::livewire('/checkout', 'pages::checkout.index')->name('checkout');
 Route::livewire('/order-confirmed/{sales_order:trx_id}', 'pages::sales-order.detail')->name('order-confirmed');
 
+Route::webhooks('moota/callback');
+
 // Route::view('/product', 'pages.product')->name('product');
 // Route::view('/cart', 'pages.cart')->name('cart');
 // Route::view('/checkout', 'pages.checkout')->name('checkout');
