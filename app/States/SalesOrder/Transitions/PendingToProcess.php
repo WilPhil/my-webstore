@@ -23,12 +23,6 @@ class PendingToProcess extends Transition
             'payment_paid_at' => now('Asia/Jakarta'),
         ]);
 
-        event(
-            new SalesOrderProcessedEvent(
-                SalesOrderData::fromModel($this->sales_order)
-            )
-        );
-
         SalesOrderProcessedEvent::dispatch(
             SalesOrderData::fromModel($this->sales_order)
         );
