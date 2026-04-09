@@ -33,9 +33,21 @@ class ApiKurirShippingDriver implements ShippingDriverInterface
             ],
             [
                 'driver' => $this->driver,
+                'code' => 'CTCSPS23',
+                'courier' => 'JNE',
+                'service' => 'Express',
+            ],
+            [
+                'driver' => $this->driver,
                 'code' => 'NSTD',
                 'courier' => 'Ninja Xpress',
                 'service' => 'Regular',
+            ],
+            [
+                'driver' => $this->driver,
+                'code' => 'NND',
+                'courier' => 'Ninja Xpress',
+                'service' => 'Express',
             ],
         ], DataCollection::class);
     }
