@@ -9,6 +9,8 @@ use App\Data\SalesOrderItemData;
 use App\Events\ShippingReceiptNumberUpdatedEvent;
 use App\Models\Product;
 use App\Models\SalesOrder;
+use App\States\SalesOrder\Pending;
+use App\States\SalesOrder\Process;
 use Illuminate\Support\Facades\DB;
 
 class SalesOrderService
@@ -53,5 +55,18 @@ class SalesOrderService
                         ]);
                 });
             });
+    }
+
+    public function updateSalesOrderStatus(
+        string $trx_id,
+        float $total
+    ): void {
+        $sales_order = SalesOrder::query()
+            ->whereTrxId($trx_id)
+            ->whereGrandTotal($total)
+            ->whereStatus(Pending::class)
+            ->first();
+
+        $sales_order->status->transitionTo(Process::class);
     }
 }
