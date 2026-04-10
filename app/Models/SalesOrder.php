@@ -3,8 +3,12 @@
 namespace App\Models;
 
 use App\States\SalesOrder\SalesOrderState;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\ModelStates\HasStates;
 
 /**
@@ -43,10 +47,11 @@ use Spatie\ModelStates\HasStates;
  * @property float $shipping_total
  * @property float $grand_total
  * @property string $due_date_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SalesOrderItem> $items
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, SalesOrderItem> $items
  * @property-read int|null $items_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrder newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrder newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrder orWhereNotState(string $column, $states)
@@ -91,11 +96,12 @@ use Spatie\ModelStates\HasStates;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrder whereSubTotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrder whereTrxId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SalesOrder whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class SalesOrder extends Model
 {
-    use HasStates;
+    use HasStates, LogsActivity;
 
     protected $with = ['items'];
 
@@ -110,5 +116,11 @@ class SalesOrder extends Model
     public function items(): HasMany
     {
         return $this->hasMany(SalesOrderItem::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['status', 'grand_total']);
     }
 }
